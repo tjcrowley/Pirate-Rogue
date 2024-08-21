@@ -52,11 +52,11 @@ function pirate_rogue_setup() {
 	    'flex-height' => true,
 	    'flex-width'  => true,
 	) );
-	
-	
+
+
 	/* Excerpts für Seiten */
-	add_post_type_support('page', 'excerpt');    
-	
+	add_post_type_support('page', 'excerpt');
+
 	// This theme uses post thumbnails.
 	add_theme_support( 'post-thumbnails' );
 
@@ -101,7 +101,7 @@ add_action( 'wp_head', 'pirate_rogue_javascript_detection', 0 );
 /*-----------------------------------------------------------------------------------*/
 function pirate_rogue_register_scripts() {
     // Register Slick
-    wp_register_script('pirate-rogue-slick', get_template_directory_uri() . '/js/slick/slick-1.8.1.min.js', array('jquery') ); 
+    wp_register_script('pirate-rogue-slick', get_template_directory_uri() . '/js/slick/slick-1.8.1.min.js', array('jquery') );
 
     // Misc jQuery Plugins
     wp_register_script( 'pirate-rogue-jquery-misc', get_template_directory_uri() . '/js/jquery.misc.js', array( 'jquery' ), '1.1' );
@@ -125,18 +125,18 @@ function pirate_rogue_base_scripts() {
 
 	// Loads stylesheets.
 	wp_enqueue_style( 'pirate-rogue-style', get_stylesheet_uri(), array(), $theme_version );
-        
+
         // Loads Custom JavaScript functionality
         wp_enqueue_script( 'pirate-rogue-script', get_template_directory_uri() . '/js/functions.min.js', array( 'jquery' ),  $theme_version, true );
         wp_localize_script( 'pirate-rogue-script', 'screenReaderText', array(
                 'expand'   => '<span class="screen-reader-text">' . esc_html__( 'Expand Child Menu', 'pirate-rogue') . '</span>',
                 'collapse' => '<span class="screen-reader-text">' . esc_html__( 'Collapse Child Menu', 'pirate-rogue') . '</span>',
         ) );
-        
-        if (is_home() && 
+
+        if (is_home() &&
                 ( '' != get_theme_mod( 'pirate_rogue_featuredtag' )  || '' != get_theme_mod( 'pirate_rogue_featuredcat' ) )) {
             wp_enqueue_script( 'pirate-rogue-slick' );
-        }        
+        }
          wp_enqueue_script( 'pirate-rogue-jquery-misc' );
 
 }
@@ -147,10 +147,10 @@ add_action( 'wp_enqueue_scripts', 'pirate_rogue_base_scripts' );
 function pirate_rogue_admin_style() {
     $theme_data = wp_get_theme();
     $theme_version = $theme_data->Version;
-    
+
 	// This theme styles the visual editor to resemble the theme style.
     // add_editor_style( array( '/css/admin.css') );
-    wp_register_style( 'themeadminstyle', get_template_directory_uri().'/css/admin.css',array(), $theme_version );	   
+    wp_register_style( 'themeadminstyle', get_template_directory_uri().'/css/admin.css',array(), $theme_version );
     wp_enqueue_style( 'themeadminstyle' );
     wp_enqueue_media();
 }
@@ -246,8 +246,8 @@ add_filter( 'user_contactmethods', 'add_twitter_contactmethod', 10, 1 );
 function pirate_rogue_customize_css() {
 	$customcss = '';
 	if ('' != get_theme_mod( 'pirate_rogue_custom_css' ) ) {
-	   $customcss .=  get_theme_mod('pirate_rogue_custom_css'); 
-	} 
+	   $customcss .=  get_theme_mod('pirate_rogue_custom_css');
+	}
 	if (!empty($customcss)) {
 	    echo '<style type="text/css">';
 	    echo $customcss;
@@ -263,8 +263,8 @@ add_action( 'wp_head', 'pirate_rogue_customize_css');
 function pirate_rogue_google_verification() {
 	$customcss = '';
 	if ('' != get_theme_mod( 'pirate_rogue_google_wmt_verification_text' ) ) {
-	   $verificationcode =  get_theme_mod('pirate_rogue_google_wmt_verification_text'); 
-	} 
+	   $verificationcode =  get_theme_mod('pirate_rogue_google_wmt_verification_text');
+	}
 	if (!empty($verificationcode)) {
 	    echo '<meta name="google-site-verification" content="'.$verificationcode.'" />'."\n";
 	}
@@ -275,7 +275,7 @@ add_action( 'wp_head', 'pirate_rogue_google_verification');
 /*-----------------------------------------------------------------------------------*/
 function pirate_rogue_add_canonical() {
     if (is_single()) {
-            
+
         $canonical = get_post_meta( get_the_ID(), 'pirate_rogue_canonical', true );
         if ($canonical) {
             $canonical = esc_url( $canonical );
@@ -406,7 +406,7 @@ function pirate_rogue_widgets_init() {
 		'after_title'   => '</h2>',
 	) );
 
-	
+
 }
 add_action( 'widgets_init', 'pirate_rogue_widgets_init' );
 
@@ -417,7 +417,7 @@ function pirate_rogue_admin_init() {
 	remove_post_type_support( 'page', 'comments' );
         // Keine Kommentar/Dkussionsmetabox auf Seiten
 }
-add_action('admin_init', 'pirate_rogue_admin_init'); 
+add_action('admin_init', 'pirate_rogue_admin_init');
 
 
 
@@ -434,14 +434,37 @@ function pirate_rogue_filter_media_comment_status( $open, $post_id ) {
 }
 add_filter( 'comments_open', 'pirate_rogue_filter_media_comment_status', 10 , 2 );
 
+
+/*-----------------------------------------------------------------------------------*/
+/* Set this theme as Woocommerce-enabled. Needed to use with woocommerce
+/*-----------------------------------------------------------------------------------*/
+
+function pirate_rogue_add_woocommerce_support() {
+    add_theme_support( 'woocommerce', array(
+        'thumbnail_image_width' => 150,
+        'single_image_width'    => 300,
+
+        'product_grid'          => array(
+            'default_rows'    => 3,
+            'min_rows'        => 2,
+            'max_rows'        => 8,
+            'default_columns' => 4,
+            'min_columns'     => 2,
+            'max_columns'     => 5,
+        ),
+    ) );
+}
+add_action( 'after_setup_theme', 'pirate_rogue_add_woocommerce_support' );
+
+
 /*-----------------------------------------------------------------------------------*/
 /* Load defaults
 /*-----------------------------------------------------------------------------------*/
-require_once( get_template_directory() . '/inc/defaults.php' );   
+require_once( get_template_directory() . '/inc/defaults.php' );
 /*-----------------------------------------------------------------------------------*/
 /* Load helper functions
 /*-----------------------------------------------------------------------------------*/
-require_once( get_template_directory() . '/inc/helper-functions.php' );   
+require_once( get_template_directory() . '/inc/helper-functions.php' );
 /*-----------------------------------------------------------------------------------*/
 /* Custom Fields and metaboxes belonging to them
 /*-----------------------------------------------------------------------------------*/
